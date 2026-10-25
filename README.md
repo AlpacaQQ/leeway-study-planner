@@ -4,9 +4,19 @@ Leeway turns your assignment deadlines and rough time estimates into a day-by-da
 
 Built for *Mandatory Assignment 3: Vibe Coding* (approach A: solve an everyday problem).
 
-**Live app:** https://alpacaqq.github.io/leeway-study-planner/
+[![Tests](https://github.com/AlpacaQQ/leeway-study-planner/actions/workflows/tests.yml/badge.svg)](https://github.com/AlpacaQQ/leeway-study-planner/actions/workflows/tests.yml)
 
-![Leeway](docs/vibeoff/cover.png)
+## Demonstration
+
+- **Try it live:** https://alpacaqq.github.io/leeway-study-planner/ (click *Try it with sample data*)
+- **Vibe Off page:** https://vibeoff.ai/build/i-built-a-study-planner-that-tells-me-how-much-leeway-i-have-8b914ba9
+- **Walkthrough video (21 s):** [docs/vibeoff/walkthrough.mp4](docs/vibeoff/walkthrough.mp4)
+
+![Leeway walkthrough](docs/demo.gif)
+
+| Today | Plan | Focus |
+|---|---|---|
+| ![Today view](docs/vibeoff/today.png) | ![Plan view](docs/vibeoff/plan.png) | ![Focus timer](docs/vibeoff/focus.png) |
 
 ## The problem
 
@@ -43,6 +53,25 @@ The whole app was vibe-coded with **Claude (Opus 5.5)** in the Claude app, which
 4. **Test and improve**: see below.
 5. **Publish.** Pushed to GitHub, hosted on GitHub Pages, demo posted to Vibe Off.
 
+### The prompts
+
+The first two messages were all it took to get a working app; the rest was review and follow-up.
+
+> *"[pasted the full assignment text] do you have any ideas what would be a good solution here?"*
+
+Claude suggested four ideas: an idle-game economy balancer, a deadline-aware study planner, an expense splitter and a live departure board.
+
+> *"Please go for the study planner and make it really good and do every step of the assignment, test it, improve, etc. make the demo link on vibeoff.ai and make the github code on my AlpacaQQ github account in a repo and a short desc."*
+
+> *"Read through the whole assignment again see if you missed anything and improve if possible."*
+
+The second pass added the walkthrough video and GIF, automated test runs on GitHub (CI), `npm test`, and this section.
+
+### What I did vs. what the AI did
+
+- **Me:** picked the idea, decided the scope, reviewed the screens, signed in to GitHub and Vibe Off, and published.
+- **AI:** designed and wrote all the code and tests, ran them, read its own screenshots, fixed the bugs it found, and wrote this README.
+
 ## Testing and what it caught
 
 | Check | Tool | Result |
@@ -51,6 +80,7 @@ The whole app was vibe-coded with **Claude (Opus 5.5)** in the Claude app, which
 | End-to-end tests (15): forms, validation, plan, log time, focus timer with a fake clock, undo, settings, calendar export, backup/import, XSS, mobile layout | Playwright | all pass |
 | Accessibility audit, all 5 views, light and dark | axe-core (WCAG 2 A/AA) | 0 violations |
 | Visual review | Screenshots at 1280 px and 390 px, light and dark | reviewed every view |
+| Continuous integration | GitHub Actions on every push | unit + end-to-end |
 
 Bugs found and fixed along the way:
 
@@ -72,10 +102,12 @@ python3 -m http.server 8000
 Run the tests:
 
 ```bash
-node --test tests/planner.test.js
+npm test                      # 17 unit tests for the planning engine (Node 18+)
 pip install playwright && python -m playwright install chromium
-python tests/e2e_test.py
+npm run test:e2e              # 15 end-to-end tests in a real browser
 ```
+
+Both suites also run automatically on GitHub for every push (see the *Tests* badge above).
 
 ## What's next
 
@@ -93,6 +125,9 @@ js/planner.js     scheduling engine (pure, testable)
 js/app.js         views, state, focus timer, import/export
 fonts/            Bricolage Grotesque + Atkinson Hyperlegible (SIL OFL)
 tests/            unit tests (Node) and end-to-end tests (Playwright)
+docs/             screenshots, demo GIF and walkthrough video
+.github/          GitHub Actions workflow that runs both test suites
+package.json      npm scripts: start, test, test:e2e
 ```
 
 All sample data in the app is made up.
