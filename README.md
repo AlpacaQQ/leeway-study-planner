@@ -9,7 +9,7 @@ Built for *Mandatory Assignment 3: Vibe Coding* (approach A: solve an everyday p
 ## Demonstration
 
 - **Try it live:** https://alpacaqq.github.io/leeway-study-planner/ (click *Try it with sample data*)
-- **Vibe Off page:** https://vibeoff.ai/build/i-built-a-study-planner-that-tells-me-how-much-leeway-i-have-8b914ba9
+- **Vibe Off page:** https://vibeoff.ai/build/leeway-study-planner-8b914ba9
 - **Walkthrough video (21 s):** [docs/vibeoff/walkthrough.mp4](docs/vibeoff/walkthrough.mp4)
 
 ![Leeway walkthrough](docs/demo.gif)
