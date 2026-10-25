@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Leeway – study planner</title>
+  <meta name="description" content="Leeway turns your deadlines and estimates into a day-by-day study plan, warns you before you run out of time, and tracks focus sessions.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232B49D1'/%3E%3Crect x='7' y='17' width='4' height='8' rx='1' fill='white'/%3E%3Crect x='14' y='11' width='4' height='14' rx='1' fill='white'/%3E%3Crect x='21' y='14' width='4' height='11' rx='1' fill='white' opacity='.6'/%3E%3Cpath d='M5 9h22' stroke='white' stroke-width='2' stroke-dasharray='3 2'/%3E%3C/svg%3E">
+  <link rel="preload" href="fonts/bricolage-grotesque-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="#today" aria-label="Leeway home">
+        <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><rect width="32" height="32" rx="8" fill="var(--cobalt)"/><rect x="7" y="17" width="4" height="8" rx="1" fill="#fff"/><rect x="14" y="11" width="4" height="14" rx="1" fill="#fff"/><rect x="21" y="14" width="4" height="11" rx="1" fill="#fff" opacity=".6"/><path d="M5 9h22" stroke="#fff" stroke-width="2" stroke-dasharray="3 2"/></svg>
+        <span>Leeway</span>
+      </a>
+      <nav class="nav" aria-label="Main">
+        <a href="#today" data-route="today"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg><span>Today</span></a>
+        <a href="#plan" data-route="plan"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Plan</span></a>
+        <a href="#assignments" data-route="assignments"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="m3 6 1.5 1.5L7 5M3 12l1.5 1.5L7 11M3 18l1.5 1.5L7 17"/></svg><span>Assignments</span></a>
+        <a href="#focus" data-route="focus"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg><span>Focus</span></a>
+        <a href="#settings" data-route="settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Settings</span></a>
+      </nav>
+      <button class="mini-timer" id="miniTimer" hidden type="button" aria-label="Open focus timer"></button>
+    </aside>
+    <main id="main" class="main" tabindex="-1"></main>
+  </div>
+
+  <dialog id="assignmentDialog" class="sheet" aria-labelledby="assignmentDialogTitle">
+    <form method="dialog" id="assignmentForm" novalidate>
+      <h2 id="assignmentDialogTitle">Add assignment</h2>
+      <label class="field">
+        <span>Title</span>
+        <input name="title" required maxlength="80" autocomplete="off" placeholder="e.g. Subnetting lab report">
+      </label>
+      <div class="row2">
+        <label class="field">
+          <span>Course</span>
+          <select name="courseId"></select>
+        </label>
+        <label class="field">
+          <span>Estimated work (hours)</span>
+          <input name="estHours" type="number" min="0.25" max="200" step="0.25" required inputmode="decimal">
+        </label>
+      </div>
+      <div class="row2">
+        <label class="field">
+          <span>Due date</span>
+          <input name="dueDate" type="date" required>
+        </label>
+        <label class="field">
+          <span>Due time</span>
+          <input name="dueTime" type="time" required>
+        </label>
+      </div>
+      <label class="field" data-edit-only>
+        <span>Hours already done</span>
+        <input name="doneHours" type="number" min="0" max="200" step="0.25" inputmode="decimal">
+      </label>
+      <label class="field">
+        <span>Notes <em>(optional)</em></span>
+        <textarea name="notes" rows="2" maxlength="400" placeholder="Hand-in on Canvas, group with Sara…"></textarea>
+      </label>
+      <p class="form-error" role="alert" hidden></p>
+      <div class="sheet-actions">
+        <button type="button" class="btn ghost" value="cancel" data-close>Cancel</button>
+        <button type="submit" class="btn primary" value="save">Save assignment</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="logDialog" class="sheet small" aria-labelledby="logDialogTitle">
+    <form method="dialog" id="logForm">
+      <h2 id="logDialogTitle">Log time</h2>
+      <p class="muted" id="logFor"></p>
+      <div class="chips" id="logQuick">
+        <button type="button" class="chip" data-min="15">15 min</button>
+        <button type="button" class="chip" data-min="30">30 min</button>
+        <button type="button" class="chip" data-min="60">1 h</button>
+        <button type="button" class="chip" data-min="120">2 h</button>
+      </div>
+      <label class="field">
+        <span>Minutes worked</span>
+        <input name="minutes" type="number" min="5" max="720" step="5" required inputmode="numeric">
+      </label>
+      <div class="sheet-actions">
+        <button type="button" class="btn ghost" data-close>Cancel</button>
+        <button type="submit" class="btn primary">Log time</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/planner.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
